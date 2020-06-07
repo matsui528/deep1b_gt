@@ -52,7 +52,7 @@ def run(root="./deep1b", out="./"):
         xb = fvecs_mmap(str(root / "base.fvecs"))
         xq = fvecs_read(str(root / "deep1B_queries.fvecs"))
 
-        xb = xb[:dbsize]
+        xb = np.ascontiguousarray(xb[:dbsize], dtype='float32')
 
         gt_fname = str(out / "deep{}_groundtruth.ivecs".format(szsuf))
 

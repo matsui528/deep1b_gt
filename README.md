@@ -27,7 +27,7 @@ pip install -r requirements.txt
 # │   ...
 # │   ├── learn_12
 # │   └── learn_13
-# └── learn.fvecs               # XXXXXX bytes
+# └── learn.fvecs               # 139,090,240,000 bytes
 python download_deep1b.py --root ./deep1b
 
 # Compute groundtruth. You need faiss
