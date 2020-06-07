@@ -5,7 +5,13 @@ from pathlib import Path
 import fire
 
 
-def download_yandisk(root, filename):
+def wget_yandisk(root, filename):
+    """
+    Wget data from the Yandisk space
+    Args:
+        root: The path to the data directory.
+        filename: The filename to download. This will be saved on root/filename
+    """
     # Obtain wget path
     command = 'curl "{url}{yadiskLink}&path=/{filename}"'.format(
         url="https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key=",
@@ -29,7 +35,12 @@ def download_yandisk(root, filename):
     process.wait()
 
 
-def run(root="./deep1b"):
+def download_deep1b(root="./deep1b"):
+    """
+    Download Deep1B data
+    Args:
+        root: The path to the data directory. Should have a 2TB space
+    """
     root = Path(root)
 
     # Create sub directories
@@ -38,13 +49,13 @@ def run(root="./deep1b"):
 
     # Download queries and gt
     for filename in ["deep1B_groundtruth.ivecs", "deep1B_queries.fvecs"]:
-        download_yandisk(root=str(root), filename=filename)
+        wget_yandisk(root=str(root), filename=filename)
 
     # Download base features
     cat = "cat "
     for n in range(37):
         filename = "base/base_{}".format(str(n).zfill(2))
-        download_yandisk(root=str(root), filename=filename)
+        wget_yandisk(root=str(root), filename=filename)
         cat += " " + str(root / filename)
     # Combine them into a single file (base.fvecs)
     cat += " > " + str(root / "base.fvecs")
@@ -54,7 +65,7 @@ def run(root="./deep1b"):
     cat = "cat "
     for n in range(14):
         filename = "learn/learn_{}".format(str(n).zfill(2))
-        download_yandisk(root=str(root), filename=filename)
+        wget_yandisk(root=str(root), filename=filename)
         cat += " " + str(root / filename)
     # Combine them into a single file (learn.fvecs)
     cat += " > " + str(root / "learn.fvecs")
@@ -62,4 +73,4 @@ def run(root="./deep1b"):
 
 
 if __name__ == '__main__':
-    fire.Fire(run)
+    fire.Fire(download_deep1b)
