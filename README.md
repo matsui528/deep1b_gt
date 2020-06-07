@@ -36,10 +36,10 @@ python compute_gt.py --root ./deep1b --out ./
 ```
 
 ## Result
-You can download the result from here
-- [deep1M_groundtruth.ivecs]()
-- [deep10M_groundtruth.ivecs]()
-- [deep100M_groundtruth.ivecs]()
+You can download the results from here [https://github.com/matsui528/deep1b_gt/releases/download/v0.1.0/gt.zip](https://github.com/matsui528/deep1b_gt/releases/download/v0.1.0/gt.zip)
+- deep1M_groundtruth.ivecs
+- deep10M_groundtruth.ivecs
+- deep100M_groundtruth.ivecs
 
 
 ## Reference
