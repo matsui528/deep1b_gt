@@ -1,6 +1,6 @@
 # deep1b_gt
 
-Compute the exact 100 nearest neighbors for deep1M, deep10M, and deep100M datasets. We can use these neighbors as the ground truth for the search task for deep{1, 10, 100}m datasets.
+Compute the exact 100 nearest neighbors for deep1M, deep10M, and deep100M datasets. We can use these neighbors as the ground truth for the search task for deep{1, 10, 100}M datasets.
 
 Note that deep{1, 10, 100}M datasets are the top {1, 10, 100}M vectors of deep1b dataset, respectively.
 ## How to run
