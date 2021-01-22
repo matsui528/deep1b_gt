@@ -81,7 +81,7 @@ python pickup_vecs.py --src ./deep1b/learn/learn_00 --dst ./deep1b/deep1M_learn.
 # │   └── learn_00
 # └── deep1M_learn.fvecs               # 38,800,000 bytes
 
-# rm -rd ./deep1b/base ./deep1b/learn    # Optionally, you can delete base and learn, that should not be used anymore
+# rm -rf ./deep1b/base ./deep1b/learn    # Optionally, you can delete base and learn, that should not be used anymore
 
 
 # Compute groundtruth. You need faiss
