@@ -2,7 +2,16 @@
 
 import subprocess
 from pathlib import Path
-import fire
+import argparse
+
+def process_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", default="./deep1b", help="The path to the data directory")
+    parser.add_argument("--base_n", default=37, type=int, help="The number of batches for base vectors to be downloaded")
+    parser.add_argument("--learn_n", default=14, type=int, help="The number of batches for learn vectors to be downloaded")
+    parser.add_argument("--ops", default=["all"], nargs="*", help="Operations to run",
+                        choices=["all", "query", "gt", "base", "base_merge", "learn", "learn_merge"])
+    return parser.parse_args()
 
 
 def wget_yandisk(root, filename):
@@ -35,42 +44,71 @@ def wget_yandisk(root, filename):
     process.wait()
 
 
-def download_deep1b(root="./deep1b"):
+def download_batches(root, prefix, batch_n):
     """
-    Download Deep1B data
+    Helper function to download batches
     Args:
-        root: The path to the data directory. Should have a 2TB space
+        root: The path to the data directory.
+        prefix: "base" or "learn"
+        batch_n: The number of batches to be downloaded
     """
-    root = Path(root)
+    assert prefix in ["base", "learn"]
+    for n in range(batch_n):
+        filename = "{}/{}_{}".format(prefix, prefix, str(n).zfill(2))  # e.g., base/base_00
+        wget_yandisk(root=root, filename=filename)
+
+def merge_batches(root, prefix, batch_n):
+    """
+    Helper function to merge batches into a single file
+    Args:
+        root: The path to the data directory.
+        prefix: "base" or "learn"
+        batch_n: The number of batches to be downloaded
+    """
+    assert prefix in ["base", "learn"]
+    cat = "cat "
+    for n in range(batch_n):
+        filename = "{}/{}_{}".format(prefix, prefix, str(n).zfill(2))  # e.g., base/base_00
+        cat += " " + str(root / filename)
+    cat += " > " + str(root / f"{prefix}.fvecs")  # e.g.: cat ./deep1b/base_00 ./deep1b/base_01 ... > ./deep1b/base.fvecs
+    subprocess.run(cat, shell=True)
+
+
+
+if __name__ == '__main__':
+    args = process_args()
+    root = Path(args.root)
+    assert root.is_dir()
+    ops = args.ops
+
+    # If "all" is specified, run the all operations
+    if "all" in ops:
+        ops = ["query", "gt", "base", "base_merge", "learn", "learn_merge"]
 
     # Create sub directories
     (root / "base").mkdir(exist_ok=True, parents=True)
     (root / "learn").mkdir(exist_ok=True, parents=True)
 
-    # Download queries and gt
-    for filename in ["deep1B_groundtruth.ivecs", "deep1B_queries.fvecs"]:
-        wget_yandisk(root=str(root), filename=filename)
+    # Download queries
+    if "query" in ops:
+        wget_yandisk(root=str(root), filename="deep1B_queries.fvecs")
+
+    # Download groundtruth
+    if "gt" in ops:
+        wget_yandisk(root=str(root), filename="deep1B_groundtruth.ivecs")
 
     # Download base features
-    cat = "cat "
-    for n in range(37):
-        filename = "base/base_{}".format(str(n).zfill(2))
-        wget_yandisk(root=str(root), filename=filename)
-        cat += " " + str(root / filename)
-    # Combine them into a single file (base.fvecs)
-    cat += " > " + str(root / "base.fvecs")
-    subprocess.run(cat, shell=True)
+    if "base" in ops: 
+        download_batches(root, "base", args.base_n)
+
+    # Merge base features into a single file
+    if "base_merge" in ops:
+        merge_batches(root, "base", args.base_n)
 
     # Download learn features
-    cat = "cat "
-    for n in range(14):
-        filename = "learn/learn_{}".format(str(n).zfill(2))
-        wget_yandisk(root=str(root), filename=filename)
-        cat += " " + str(root / filename)
-    # Combine them into a single file (learn.fvecs)
-    cat += " > " + str(root / "learn.fvecs")
-    subprocess.run(cat, shell=True)
+    if "learn" in ops: 
+        download_batches(root, "learn", args.learn_n)
 
-
-if __name__ == '__main__':
-    fire.Fire(download_deep1b)
+    # Merge learn features into a single file
+    if "learn_merge" in ops:
+        merge_batches(root, "learn", args.learn_n)
