@@ -10,7 +10,7 @@ You can download the results from here [https://github.com/matsui528/deep1b_gt/r
 - deep10M_groundtruth.ivecs
 - deep100M_groundtruth.ivecs
 
-You can download them by
+
 ```bash
 wget https://github.com/matsui528/deep1b_gt/releases/download/v0.1.0/gt.zip
 unzip gt
