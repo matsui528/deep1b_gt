@@ -10,12 +10,24 @@ You can download the results from here [https://github.com/matsui528/deep1b_gt/r
 - deep10M_groundtruth.ivecs
 - deep100M_groundtruth.ivecs
 
+You can download them by
+```bash
+wget https://github.com/matsui528/deep1b_gt/releases/download/v0.1.0/gt.zip
+unzip gt
 
-## How to run
+# The directory structure will be:
+# .
+# ├── deep100M_groundtruth.ivecs
+# ├── deep10M_groundtruth.ivecs
+# ├── deep1M_groundtruth.ivecs
+# └── gt.zip
+```
+
+
+## How to run by yourself
 ```bash
 git clone https://github.com/matsui528/deep1b_gt.git
 cd deep1b_gt
-pip install -r requirements.txt
 
 # Download Deep1b data on ./deep1b. This may take several days. I recommend preparing 2TB of the disk space.
 python download_deep1b.py --root ./deep1b
@@ -60,7 +72,6 @@ As the deep1b dataset is too huge, you may want to download its subset (top 1M v
 ```bash
 git clone https://github.com/matsui528/deep1b_gt.git
 cd deep1b_gt
-pip install -r requirements.txt
 
 # Download base_00, learn_00, and query on ./deep1b. This may take some hours. I recommend preparing 25GB of the disk space.
 python download_deep1b.py --root ./deep1b --base_n 1 --learn_n 1 --ops query base learn 
@@ -82,13 +93,6 @@ python pickup_vecs.py --src ./deep1b/learn/learn_00 --dst ./deep1b/deep1M_learn.
 # └── deep1M_learn.fvecs               # 38,800,000 bytes
 
 # rm -rf ./deep1b/base ./deep1b/learn    # Optionally, you can delete base and learn, that should not be used anymore
-
-
-# Compute groundtruth. You need faiss
-conda install -c pytorch faiss-cpu
-python compute_gt.py --out ./ --szsufs 1M --base_filename ./deep1b/deep1M_base.fvecs --query_filename ./deep1b/deep1B_queries.fvecs 
-
-# You'll get deep1M_groundtruth.ivecs
 ```
 
 
